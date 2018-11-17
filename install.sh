@@ -86,7 +86,7 @@ $cleos set contract eosio $CONTRACTS_DIR/eosio.bios
 #Public key: EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
 ##Now import the private key portion into your wallet. If successful, the matching public key will be reported. This should match the previously generated public key:
 ##But here we only import a key pairs above
-$cleos wallet import 5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr
+$cleos wallet import --private-key 5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr
 ##Create the inita account that we will use to become a producer.
 ##The create account command requires two public keys, one for the account's owner key and one for its active key.
 ##In this example, the newly created public key is used twice, as both the owner key and the active key.
@@ -95,7 +95,7 @@ $cleos create account eosio inita EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3o
 $cleos create account eosio initb EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
 
 #################################################################################
-#Start the Second Producer Node 'nodeosd2'
+#Start  Producer Node 'nodeosd2'
 docker run \
    --network testnet2 \
    --ip 172.30.0.102 \
@@ -148,6 +148,8 @@ docker run \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
 sleep 3s
 
+#Switch producer between inita and initb per 12 blocks produced
+cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
 
 
 
@@ -160,14 +162,20 @@ sleep 3s
 $cleos wallet import --private-key 5HuXYXnPRxpkjmS6w9v3TNYzNqXAwHCwY3QESV9NnKQJMB2kDAX
 $cleos create account eosio bob   EOS7HxPMkfyL69PqLXduP9YfuvVad8e3Nry6ryDGaJ2u8BKB2zUUm 
 $cleos create account eosio alice EOS7HxPMkfyL69PqLXduP9YfuvVad8e3Nry6ryDGaJ2u8BKB2zUUm
-$cleos create account eosio hello EOS7HxPMkfyL69PqLXduP9YfuvVad8e3Nry6ryDGaJ2u8BKB2zUUm -p eosio@active
 
+$cleos create account eosio hello EOS7HxPMkfyL69PqLXduP9YfuvVad8e3Nry6ryDGaJ2u8BKB2zUUm -p eosio@active
+$cleos set contract hello ../contracts/hello  -p hello@active
+
+$cleos create account eosio eosio.token EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
+$cleos set contract eosio.token /contracts/eosio.token
+$cleos push action eosio.token create '[ "eosio", "1000000000.0000 EOS", 0, 0, 0]' -p eosio.token
+$cleos push action eosio.token issue '[ "alice", "10000.0000 EOS", "" ]' -p eosio@active
 #Your can do some test using below  
 #test contract "hello"
 #$cleos set contract hello ../contracts/hello  -p hello@active
 #$cleos push action hello hi '["bob"]' -p bob@active
 #switch producer from eosio to inita
 #cleos --wallet-url http://127.0.0.1:8899 push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
-#cleos --wallet-url http://127.0.0.1:8899 push action eosio setprods '{ "schedule": [{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
-#Switch producer between inita and initb per 12 blocks produced
-#cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
+#cleois --wallet-url http://127.0.0.1:8899 push action eosio setprods '{ "schedule": [{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
+
+#cleos get table eosio.token alice accounts
