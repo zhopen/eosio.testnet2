@@ -1,12 +1,14 @@
 set -x
 
 MY_CONTRACTS_DIR=/opt/eos/contracts
+SYSTEM_CONTRACTS_DIR=/opt/eos/eosio.contracts
+ROOT_DIR=/opt/eos/testnet2
 
 #Create docker volume outside container
-rm -rf /opt/eos/testnet2/volume/
-mkdir -p /opt/eos/testnet2/volume/keosd   
-mkdir -p /opt/eos/testnet2/volume/nodeosd1
-mkdir -p /opt/eos/testnet2/volume/nodeosd2
+rm -rf $ROOT_DIR/../volume/
+mkdir -p $ROOT_DIR/../volume/keosd   
+mkdir -p $ROOT_DIR/../volume/nodeosd1
+mkdir -p $ROOT_DIR/../volume/nodeosd2
 ##########################################################################
 #Create docker network bridage 'testnet2'
 docker network create \
@@ -23,16 +25,16 @@ docker run \
    --ip 172.30.0.100 \
    --name keosd \
    --publish 0.0.0.0:8899:8899 \
-   --volume /opt/eos/testnet2/volume/keosd:/opt/eosio/bin/data-dir \
-   --volume /opt/eos/eosio.contracts:/opt/eos/eosio.contracts \
+   --volume $ROOT_DIR/../volume/keosd/data-dir:/opt/eosio/bin/data-dir \
+   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --detach   eosio/eos:v1.4.3 \
    /bin/bash -c \
-   "keosd --http-server-address 0.0.0.0:8899"
+   "keosd --http-server-address 0.0.0.0:8899" 
 sleep 1s  
 cleos='docker exec -it keosd /opt/eosio/bin/cleos --url http://172.30.0.101:8888 --wallet-url http://172.30.0.100:8899'   
 ##Create wallet    
-WALLET_PWD_FILE=/opt/eos/testnet2/volume/keosd/walletpasswd.txt
+WALLET_PWD_FILE=$ROOT_DIR/../volume/keosd/data-dir/walletpasswd.txt
 WALLET_PWD_FILE_IN_CONTAINER=/opt/eosio/bin/data-dir/walletpasswd.txt
 $cleos wallet create --file $WALLET_PWD_FILE_IN_CONTAINER
 
@@ -53,8 +55,8 @@ docker run \
    --name nodeosd1 \
    --publish 0.0.0.0:8888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --volume /opt/eos/eosio.contracts:/opt/eos/eosio.contracts \
-   --volume /opt/eos/testnet2/volume/nodeosd1:/opt/eosio/bin/data-dir \
+   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
+   --volume $ROOT_DIR/../volume/nodeosd1:/opt/eosio/bin/data-dir \
    --detach   eosio/eos:v1.4.3 \
    nodeos \
    --enable-stale-production \
@@ -102,8 +104,8 @@ docker run \
    --name nodeosd2 \
    --publish 0.0.0.0:18888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --volume /opt/eos/eosio.contracts:/opt/eos/eosio.contracts \
-   --volume /opt/eos/testnet2/volume/nodeosd2:/opt/eosio/bin/data-dir \
+   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
+   --volume $ROOT_DIR/../volume/nodeosd2:/opt/eosio/bin/data-dir \
    --detach   eosio/eos:v1.4.3 \
    nodeos \
    --producer-name inita \
@@ -128,8 +130,8 @@ docker run \
    --name nodeosd3 \
    --publish 0.0.0.0:28888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --volume /opt/eos/eosio.contracts:/opt/eos/eosio.contracts \
-   --volume /opt/eos/testnet2/volume/nodeosd3:/opt/eosio/bin/data-dir \
+   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
+   --volume $ROOT_DIR/../volume/nodeosd3:/opt/eosio/bin/data-dir \
    --detach   eosio/eos:v1.4.3 \
    nodeos \
    --producer-name initb \
