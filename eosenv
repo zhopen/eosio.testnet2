@@ -1,7 +1,7 @@
 unalias cleos
 unalias walletpwd
 unalias dockerrm
-alias cleos='docker exec -it keosd /opt/eosio/bin/cleos --url http://172.30.0.101:8888 --wallet-url http://0.0.0.0:8899 --print-request' 
-alias cl='docker exec -it nodeosd1 /opt/eosio/bin/cleos --url http://172.30.0.102:8888 --wallet-url http://0.0.0.0:8899 --print-request'
+alias cleos='docker exec -it keosd /opt/eosio/bin/cleos --url http://172.30.0.101:8888 --wallet-url http://172.30.0.100:8888 ' 
+alias cl='docker exec -it nodeosd1 /opt/eosio/bin/cleos --url http://172.30.0.101:8888 --wallet-url http://172.30.0.100:8888 '
 alias walletpwd='cat /opt/eos/volume/keosd/data-dir/walletpasswd.txt'
 alias dockerrm='docker rm -f nodeosd1 nodeosd2 nodeosd3 keosd'

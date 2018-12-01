@@ -24,15 +24,15 @@ docker run \
    --network testnet2 \
    --ip 172.30.0.100 \
    --name keosd \
-   --publish 0.0.0.0:8899:8899 \
+   --publish 0.0.0.0:8888:8888 \
    --volume $ROOT_DIR/../volume/keosd/data-dir:/opt/eosio/bin/data-dir \
    --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --detach   eosio/eos:v1.4.3 \
    /bin/bash -c \
-   "keosd --http-server-address 0.0.0.0:8899" 
+   "keosd --http-server-address 0.0.0.0:8888" 
 sleep 1s  
-cleos='docker exec -it keosd /opt/eosio/bin/cleos --url http://172.30.0.101:8888 --wallet-url http://172.30.0.100:8899'   
+cleos='docker exec -it keosd /opt/eosio/bin/cleos --url http://172.30.0.101:8888 --wallet-url http://172.30.0.100:8888'   
 ##Create wallet    
 WALLET_PWD_FILE=$ROOT_DIR/../volume/keosd/data-dir/walletpasswd.txt
 WALLET_PWD_FILE_IN_CONTAINER=/opt/eosio/bin/data-dir/walletpasswd.txt
@@ -53,7 +53,7 @@ docker run \
    --network testnet2 \
    --ip 172.30.0.101 \
    --name nodeosd1 \
-   --publish 0.0.0.0:8888:8888 \
+   --publish 0.0.0.0:18888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $ROOT_DIR/../volume/nodeosd1:/opt/eosio/bin/data-dir \
@@ -77,7 +77,7 @@ CONTRACTS_DIR=/contracts
 ##To start additional nodes, you must first load the eosio.bios contract.
 ##This contract enables you to have direct control over the resource allocation of other accounts and to access other privileged API calls.
 ##Return to the second terminal window and run the following command to load the contract:
-$cleos set contract eosio $CONTRACTS_DIR/eosio.bios
+$cleos set contract eosio $CONTRACTS_DIR/eosio.bios -p eosio@active
    
 ################################################################################
 ##We will create two account to become a producer, using the account name [inita,initb].
@@ -102,7 +102,7 @@ docker run \
    --network testnet2 \
    --ip 172.30.0.102 \
    --name nodeosd2 \
-   --publish 0.0.0.0:18888:8888 \
+   --publish 0.0.0.0:28888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $ROOT_DIR/../volume/nodeosd2:/opt/eosio/bin/data-dir \
@@ -128,7 +128,7 @@ docker run \
    --network testnet2 \
    --ip 172.30.0.103 \
    --name nodeosd3 \
-   --publish 0.0.0.0:28888:8888 \
+   --publish 0.0.0.0:38888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $ROOT_DIR/../volume/nodeosd3:/opt/eosio/bin/data-dir \
