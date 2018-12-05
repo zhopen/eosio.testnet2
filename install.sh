@@ -30,7 +30,7 @@ docker run \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --detach   eosio/eos:v1.4.3 \
    /bin/bash -c \
-   "keosd --http-server-address 0.0.0.0:8888" 
+   "keosd --http-server-address 0.0.0.0:8888 --http-validate-host false" 
 sleep 1s  
 cleos='docker exec -it keosd /opt/eosio/bin/cleos --url http://172.30.0.101:8888 --wallet-url http://172.30.0.100:8888'   
 ##Create wallet    
