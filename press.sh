@@ -11,7 +11,7 @@ start_balance=`$cleos get currency balance  eosio.token alice eos | awk -F. '{pr
 
 for((i=1;i<=$1;i++))
 do
-xargs -n 1 -I '#' -P 100  $cleos push action eosio.token transfer '[ "alice", "#", "1.0000 EOS", "" ]' -p alice@active <accounts.txt
+xargs -n 1 -I '#' -P 200  $cleos push action eosio.token transfer '[ "alice", "#", "1.0000 EOS", "" ]' -p alice@active <accounts.txt  >press.log 2>&1
 done
 
 sleep 1s
@@ -27,4 +27,4 @@ account_total=`wc -l < accounts.txt`
 trx_total=`expr $account_total \* $1`
 echo "trx tps:" `expr  $trx_total / $duration`
 
-
+echo "successful trx tps:" `expr $transfer_count / $duration` 
