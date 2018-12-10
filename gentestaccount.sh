@@ -13,6 +13,7 @@ cleos="cleos --url $2 --wallet-url $3"
 
 $cleos wallet import --private-key 5KHxR9khycedPcXdcHf6iEFwUNhNmJ7qUHfXmZ2Aoe8veEMYnES
 
+rm -f  accounts.txt
 for ((i=0;i<$1;i++))
 do
 echo --------------------------

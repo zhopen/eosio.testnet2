@@ -50,6 +50,7 @@ $cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79
 #######################################################################
 #Start the First Producer Node 'nodeosd1'
 docker run \
+   --cpuset-cpus 0 \
    --network testnet2 \
    --ip 172.30.0.101 \
    --name nodeosd1 \
@@ -99,6 +100,7 @@ $cleos create account eosio initb EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3o
 #################################################################################
 #Start  Producer Node 'nodeosd2'
 docker run \
+   --cpuset-cpus 1 \
    --network testnet2 \
    --ip 172.30.0.102 \
    --name nodeosd2 \
@@ -151,7 +153,7 @@ docker run \
 sleep 3s
 
 #Switch producer between inita and initb per 12 blocks produced
-cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
+$cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
 
 
 
