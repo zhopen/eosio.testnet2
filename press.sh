@@ -15,7 +15,7 @@ LOG_FILE=./press.log
 
 for((i=0;i<$1;i++));
 do
-xargs -a $ACCOUNTS_FILE -n 1 -I '#' -P 200  $cleos push action eosio.token transfer '[ "alice", "#", "1.0000 EOS", "" ]' -p alice@active  >$LOG_FILE 2>&1;
+xargs -a $ACCOUNTS_FILE -n 1 -I '#' -P 1000   $cleos push action eosio.token transfer '[ "alice", "#", "1.0000 EOS", "" ]' -p alice@active  >$LOG_FILE 2>&1;
 done
 
 sleep 1s
