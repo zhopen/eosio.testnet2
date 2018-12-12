@@ -18,7 +18,6 @@ do
 xargs -a $ACCOUNTS_FILE -n 1 -I '#' -P 1000   $cleos push action eosio.token transfer '[ "alice", "#", "1.0000 EOS", "" ]' -p alice@active  >$LOG_FILE 2>&1;
 done
 
-sleep 1s
 END_BALANCE=`$cleos get currency balance  eosio.token alice eos | awk -F. '{print $1}'`
 TRANSFER_TOTAL=`expr $END_BALANCE - $START_BALANCE`
 echo 'transfer count:' $TRANSFER_TOTAL

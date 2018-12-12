@@ -63,8 +63,6 @@ docker run \
    --enable-stale-production \
    --http-server-address 0.0.0.0:8888 \
    --p2p-listen-endpoint 0.0.0.0:9876 \
-   --p2p-peer-address 172.30.0.102:9876 \
-   --p2p-peer-address 172.30.0.103:9876 \
    --data-dir /opt/eosio/bin/data-dir \
    --producer-name eosio \
    --plugin eosio::chain_plugin \
@@ -99,64 +97,6 @@ $cleos wallet import --private-key 5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVE
 $cleos create account eosio inita EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
 $cleos create account eosio initb EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
 
-#################################################################################
-#Start  Producer Node 'nodeosd2'
-docker run \
-   --cpuset-cpus 1 \
-   --network testnet2 \
-   --ip 172.30.0.102 \
-   --name nodeosd2 \
-   --publish 0.0.0.0:28888:8888 \
-   --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
-   --volume $ROOT_DIR/../volume/nodeosd2:/opt/eosio/bin/data-dir \
-   --detach   eosio/eos:v1.4.3 \
-   nodeos \
-   --producer-name inita \
-   --plugin eosio::chain_plugin \
-   --plugin eosio::chain_api_plugin  \
-   --plugin eosio::history_api_plugin \
-   --plugin eosio::history_plugin \
-   --plugin eosio::net_plugin  \
-   --plugin eosio::net_api_plugin  \
-   --http-server-address 0.0.0.0:8888 \
-   --p2p-listen-endpoint 0.0.0.0:9876 \
-   --p2p-peer-address 172.30.0.101:9876 \
-   --p2p-peer-address 172.30.0.103:9876 \
-   --data-dir /opt/eosio/bin/data-dir \
-   --private-key [\"EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg\",\"5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr\"] \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
-sleep 3s
-
-#Start Producer Node 'nodeosd3'
-docker run \
-   --network testnet2 \
-   --ip 172.30.0.103 \
-   --name nodeosd3 \
-   --publish 0.0.0.0:38888:8888 \
-   --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
-   --volume $ROOT_DIR/../volume/nodeosd3:/opt/eosio/bin/data-dir \
-   --detach   eosio/eos:v1.4.3 \
-   nodeos \
-   --producer-name initb \
-   --plugin eosio::chain_plugin \
-   --plugin eosio::chain_api_plugin  \
-   --plugin eosio::history_api_plugin \
-   --plugin eosio::history_plugin \
-   --plugin eosio::net_plugin  \
-   --plugin eosio::net_api_plugin  \
-   --http-server-address 0.0.0.0:8888 \
-   --p2p-listen-endpoint 0.0.0.0:9876 \
-   --p2p-peer-address 172.30.0.102:9876 \
-   --p2p-peer-address 172.30.0.101:9876 \
-   --data-dir /opt/eosio/bin/data-dir \
-   --private-key [\"EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg\",\"5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr\"] \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
-sleep 3s
-
-#Switch producer between inita and initb per 12 blocks produced
-$cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
 
 
 
@@ -176,13 +116,4 @@ $cleos set contract hello ../contracts/hello  -p hello@active
 $cleos create account eosio eosio.token EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
 $cleos set contract eosio.token /contracts/eosio.token
 $cleos push action eosio.token create '[ "eosio", "1000000000.0000 EOS", 0, 0, 0]' -p eosio.token
-$cleos push action eosio.token issue '[ "alice", "100000000.0000 EOS", "" ]' -p eosio@active
-#Your can do some test using below  
-#test contract "hello"
-#$cleos set contract hello ../contracts/hello  -p hello@active
-#$cleos push action hello hi '["bob"]' -p bob@active
-#switch producer from eosio to inita
-#cleos --wallet-url http://127.0.0.1:8899 push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
-#cleois --wallet-url http://127.0.0.1:8899 push action eosio setprods '{ "schedule": [{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
-
-#cleos get table eosio.token alice accounts
+$cleos push action eosio.token issue '[ "alice", "10000.0000 EOS", "" ]' -p eosio@active
