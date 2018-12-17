@@ -6,3 +6,4 @@ unalias dockerrm
 alias walletpwd='cat /opt/eos/volume/keosd/data-dir/walletpasswd.txt'
 alias dockerrm='docker rm -f nodeosd1 nodeosd2 nodeosd3 keosd'
 alias cl='cleos --url http://127.0.0.1:18888 --wallet-url http://127.0.0.1:8888'
+alias unlock='cleos --wallet-url http://127.0.0.1:8888 wallet unlock --password `walletpwd`'
