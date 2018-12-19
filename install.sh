@@ -174,7 +174,7 @@ $cleos create account eosio hello EOS7HxPMkfyL69PqLXduP9YfuvVad8e3Nry6ryDGaJ2u8B
 $cleos set contract hello ../contracts/hello  -p hello@active
 
 $cleos create account eosio eosio.token EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
-$cleos set contract eosio.token /contracts/eosio.token
+$cleos set contract eosio.token /contracts/eosio.token -p eosio.token@active
 $cleos push action eosio.token create '[ "eosio", "1000000000.0000 EOS", 0, 0, 0]' -p eosio.token
 $cleos push action eosio.token issue '[ "alice", "100000000.0000 EOS", "" ]' -p eosio@active
 #Your can do some test using below  
@@ -191,14 +191,14 @@ $cleos push action eosio.token issue '[ "alice", "100000000.0000 EOS", "" ]' -p 
 
 #[root@eos kqjs]# cl wallet private_keys
 #password: [[
-#    "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",
+#    "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV",     ----used with account eosio
 #    "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
 #  ],[
-#    "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg",
+#    "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg",     ----used with inta intb eosio.token
 #    "5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr"
 #  ],[
-#    "EOS7HxPMkfyL69PqLXduP9YfuvVad8e3Nry6ryDGaJ2u8BKB2zUUm",
-#    "5HuXYXnPRxpkjmS6w9v3TNYzNqXAwHCwY3QESV9NnKQJMB2kDAX"
+#    "EOS7HxPMkfyL69PqLXduP9YfuvVad8e3Nry6ryDGaJ2u8BKB2zUUm",       ----used with alice bob hello
+#    "5HuXYXnPRxpkjmS6w9v3TNYzNqXAwHCwY3QESV9NnKQJMB2kDAX" 
 #  ]
 #]
 
