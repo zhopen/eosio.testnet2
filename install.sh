@@ -11,6 +11,7 @@ mkdir -p $ROOT_DIR/../volume/nodeosd1
 mkdir -p $ROOT_DIR/../volume/nodeosd2
 ##########################################################################
 #Create docker network bridage 'testnet2'
+#########################################################################
 docker network create \
   --driver=bridge \
   --subnet=172.30.0.0/16 \
@@ -18,8 +19,21 @@ docker network create \
   --gateway=172.30.0.1 \
   testnet2
 
+#########################################################
+#   install mongodb
+#########################################################
+#docker run \
+#   --network testnet2 \
+#   --ip 172.30.0.200 \
+#   --name mongo \
+#   --publish 0.0.0.0:27017:27017 \
+#   --detach \
+#   mongo:4.0.4
+#sleep 2
+
 ##########################################################################
 #keosd, firstly start keosd server
+#########################################################################
 docker run \
    --network testnet2 \
    --ip 172.30.0.100 \
@@ -48,7 +62,8 @@ $cleos wallet list
 $cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
 
 #######################################################################
-#Start the First Producer Node 'nodeosd1'
+#Setup nodeosd1, Non produce
+#######################################################################
 docker run \
    --cpuset-cpus 0 \
    --network testnet2 \
@@ -74,7 +89,7 @@ docker run \
    --plugin eosio::net_plugin \
    --plugin eosio::net_api_plugin \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
-sleep 5s
+sleep 2s
 #publish a system contract eosio.bios to nodeos1
 CONTRACTS_DIR=/contracts
 ##To start additional nodes, you must first load the eosio.bios contract.
@@ -100,7 +115,8 @@ $cleos create account eosio inita EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3o
 $cleos create account eosio initb EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
 
 #################################################################################
-#Start  Producer Node 'nodeosd2'
+#Setup  Producer Node 'nodeosd2'
+#################################################################################
 docker run \
    --cpuset-cpus 1 \
    --network testnet2 \
@@ -128,7 +144,9 @@ docker run \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
 sleep 3s
 
-#Start Producer Node 'nodeosd3'
+################################################################################
+#Setup Producer Node 'nodeosd3'
+################################################################################
 docker run \
    --network testnet2 \
    --ip 172.30.0.103 \
@@ -155,11 +173,11 @@ docker run \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
 sleep 3s
 
-#Switch producer between inita and initb per 12 blocks produced
+#####Switch producer between inita and initb per 12 blocks produced
 $cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
 
-
-
+################################################################################
+#  Do some thing  for test
 ################################################################################
 #TEST
 #create three contract-type account 'alice' 'bob' 'hello'
