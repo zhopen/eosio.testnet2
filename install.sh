@@ -1,7 +1,6 @@
 set -x
 
 MY_CONTRACTS_DIR=/opt/eos/contracts
-SYSTEM_CONTRACTS_DIR=/opt/eos/eosio.contracts
 ROOT_DIR=/opt/eos/testnet2
 
 #Create docker volume outside container
@@ -40,7 +39,6 @@ docker run \
    --name keosd \
    --publish 0.0.0.0:8888:8888 \
    --volume $ROOT_DIR/../volume/keosd/data-dir:/opt/eosio/bin/data-dir \
-   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --detach   eosio/eos:v1.4.3 \
    /bin/bash -c \
@@ -71,7 +69,6 @@ docker run \
    --name nodeosd1 \
    --publish 0.0.0.0:18888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $ROOT_DIR/../volume/nodeosd1:/opt/eosio/bin/data-dir \
    --detach   eosio/eos:v1.4.3 \
    nodeos \
@@ -124,7 +121,6 @@ docker run \
    --name nodeosd2 \
    --publish 0.0.0.0:28888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $ROOT_DIR/../volume/nodeosd2:/opt/eosio/bin/data-dir \
    --detach   eosio/eos:v1.4.3 \
    nodeos \
@@ -153,7 +149,6 @@ docker run \
    --name nodeosd3 \
    --publish 0.0.0.0:38888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --volume SYSTEM_CONTRACTS_DIR:/opt/eos/eosio.contracts \
    --volume $ROOT_DIR/../volume/nodeosd3:/opt/eosio/bin/data-dir \
    --detach   eosio/eos:v1.4.3 \
    nodeos \
