@@ -5,49 +5,49 @@ NODEOS_NUM=21
 MY_CONTRACTS_DIR=/opt/eos/contracts
 ROOT_DIR=/opt/eos/testnet2
 
-NODEOS0_IP=172.30.0.100
-NODEOS1_IP=172.30.0.101
-NODEOS2_IP=172.30.0.102
-NODEOS3_IP=172.30.0.103
-NODEOS4_IP=172.30.0.104
-NODEOS5_IP=172.30.0.105
-NODEOS6_IP=172.30.0.106
-NODEOS7_IP=172.30.0.107
-NODEOS8_IP=172.30.0.108
-NODEOS9_IP=172.30.0.109
-NODEOS10_IP=172.30.0.110
-NODEOS11_IP=172.30.0.111
-NODEOS12_IP=172.30.0.112
-NODEOS13_IP=172.30.0.113
-NODEOS14_IP=172.30.0.114
-NODEOS15_IP=172.30.0.115
-NODEOS16_IP=172.30.0.116
-NODEOS17_IP=172.30.0.117
-NODEOS18_IP=172.30.0.118
-NODEOS19_IP=172.30.0.119
-NODEOS20_IP=172.30.0.120
+NODEOS_IP=(172.30.0.100 \
+172.30.0.101 \
+172.30.0.102 \
+172.30.0.103 \
+172.30.0.104 \
+172.30.0.105 \
+172.30.0.106 \
+172.30.0.107 \
+172.30.0.108 \
+172.30.0.109 \
+172.30.0.110 \
+172.30.0.111 \
+172.30.0.112 \
+172.30.0.113 \
+172.30.0.114 \
+172.30.0.115 \
+172.30.0.116 \
+172.30.0.117 \
+172.30.0.118 \
+172.30.0.119 \
+172.30.0.120)
 
-PRODUCTER_NODEOS0=eosio
-PRODUCTER_NODEOS1=inita
-PRODUCTER_NODEOS2=initb
-PRODUCTER_NODEOS3=initc
-PRODUCTER_NODEOS4=initd
-PRODUCTER_NODEOS5=inite
-PRODUCTER_NODEOS6=initf
-PRODUCTER_NODEOS7=initg
-PRODUCTER_NODEOS8=inith
-PRODUCTER_NODEOS9=initi
-PRODUCTER_NODEOS10=initj
-PRODUCTER_NODEOS11=initk
-PRODUCTER_NODEOS12=initl
-PRODUCTER_NODEOS13=initm
-PRODUCTER_NODEOS14=initn
-PRODUCTER_NODEOS15=inito
-PRODUCTER_NODEOS16=initp
-PRODUCTER_NODEOS17=initq
-PRODUCTER_NODEOS18=initr
-PRODUCTER_NODEOS19=inits
-PRODUCTER_NODEOS20=initt
+PRODUCTERS=(eosio \
+inita \
+initb \
+initc \
+initd \
+inite \
+initf \
+initg \
+inith \
+initi \
+initj \
+initk \
+initl \
+initm \
+initn \
+inito \
+initp \
+initq \
+initr \
+inits \
+initt)
 
 
 
@@ -94,7 +94,7 @@ docker run \
    /bin/bash -c \
    "keosd --http-server-address 0.0.0.0:8888 --http-validate-host false" 
 sleep 1s  
-cleos='docker exec -it keosd /opt/eosio/bin/cleos --url http://172.30.0.100:33001 --wallet-url http://172.30.0.200:8888'   
+cleos='docker exec -it keosd /opt/eosio/bin/cleos --url http://172.30.0.100:8888 --wallet-url http://172.30.0.200:8888'   
 ##Create wallet    
 WALLET_PWD_FILE=$ROOT_DIR/../volume/keosd/data-dir/walletpasswd.txt
 WALLET_PWD_FILE_IN_CONTAINER=/opt/eosio/bin/data-dir/walletpasswd.txt
@@ -108,31 +108,76 @@ $cleos wallet list
 ##Loading the eosio Key
 #The private blockchain launched in the steps above is created with a default initial key which must be loaded into the wallet.  
 $cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
+$cleos wallet import --private-key 5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr
 
 #######################################################################
-#Setup nodeos1, Non produce
+#Setup nodeos0, Non produce
 #######################################################################
-for((i=0, port=33000;i<$NODEOS_NUM;i++,port++))
-do
+i=0
+no1=$(((i+1+NODEOS_NUM)%NODEOS_NUM))
+no2=$(((i+2+NODEOS_NUM)%NODEOS_NUM))
+no3=$(((i+3+NODEOS_NUM)%NODEOS_NUM))
+no4=$(((i+4+NODEOS_NUM)%NODEOS_NUM))
 docker run \
    --cpuset-cpus 0 \
    --network testnet2 \
-   --ip $NODEOS$i_IP \
+   --ip ${NODEOS_IP[$i]} \
    --name nodeos$i \
-   --publish 0.0.0.0:$port:8888 \
+   --publish 0.0.0.0:$dokcerport:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --volume $ROOT_DIR/../volume/nodeos$i:/opt/eosio/bin/data-dir \
-   --detach   eosio/eos:v1.4.3 \
+   --detach \
+   eosio/eos:v1.4.3 \
    nodeos \
    --enable-stale-production \
    --http-server-address 0.0.0.0:8888 \
    --p2p-listen-endpoint 0.0.0.0:9876 \
-   --p2p-peer-address $(((i+1+NODEOS_NUM)%NODEOS_NUM)):9876 \
-   --p2p-peer-address $(((i+2+NODEOS_NUM)%NODEOS_NUM)):9876 \
-   --p2p-peer-address $(((i+3+NODEOS_NUM)%NODEOS_NUM)):9876 \
-   --p2p-peer-address $(((i+4+NODEOS_NUM)%NODEOS_NUM)):9876 \
+   --p2p-peer-address ${NODEOS_IP[$no1]}:9876 \
+   --p2p-peer-address ${NODEOS_IP[$no2]}:9876 \
+   --p2p-peer-address ${NODEOS_IP[$no3]}:9876 \
+   --p2p-peer-address ${NODEOS_IP[$no4]}:9876 \
    --data-dir /opt/eosio/bin/data-dir \
-   --producer-name $PRODUCTER_NODEOS$i \
+   --producer-name ${PRODUCTERS[$i]} \
+   --plugin eosio::chain_plugin \
+   --plugin eosio::chain_api_plugin \
+   --plugin eosio::history_api_plugin \
+   --plugin eosio::history_plugin \
+   --plugin eosio::net_plugin \
+   --plugin eosio::net_api_plugin \
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
+sleep 1s
+
+#######################################################################
+#Setup other nodeos
+#######################################################################
+for((i=1, dokcerport=33000;i<$NODEOS_NUM;i++,dokcerport++))
+do
+$cleos create account eosio ${PRODUCTERS[$i]} EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
+no1=$(((i+1+NODEOS_NUM)%NODEOS_NUM))
+no2=$(((i+2+NODEOS_NUM)%NODEOS_NUM))
+no3=$(((i+3+NODEOS_NUM)%NODEOS_NUM))
+no4=$(((i+4+NODEOS_NUM)%NODEOS_NUM))
+docker run \
+   --cpuset-cpus 0 \
+   --network testnet2 \
+   --ip ${NODEOS_IP[$i]} \
+   --name nodeos$i \
+   --publish 0.0.0.0:$dokcerport:8888 \
+   --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
+   --volume $ROOT_DIR/../volume/nodeos$i:/opt/eosio/bin/data-dir \
+   --detach \
+   eosio/eos:v1.4.3 \
+   nodeos \
+   --enable-stale-production \
+   --http-server-address 0.0.0.0:8888 \
+   --p2p-listen-endpoint 0.0.0.0:9876 \
+   --p2p-peer-address ${NODEOS_IP[$no1]}:9876 \
+   --p2p-peer-address ${NODEOS_IP[$no2]}:9876 \
+   --p2p-peer-address ${NODEOS_IP[$no3]}:9876 \
+   --p2p-peer-address ${NODEOS_IP[$no4]}:9876 \
+   --data-dir /opt/eosio/bin/data-dir \
+   --producer-name ${PRODUCTERS[$i]} \
+   --private-key [\"EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg\",\"5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr\"] \
    --plugin eosio::chain_plugin \
    --plugin eosio::chain_api_plugin \
    --plugin eosio::history_api_plugin \
@@ -151,27 +196,9 @@ CONTRACTS_DIR=/contracts
 ##This contract enables you to have direct control over the resource allocation of other accounts and to access other privileged API calls.
 ##Return to the second terminal window and run the following command to load the contract:
 $cleos set contract eosio $CONTRACTS_DIR/eosio.bios -p eosio@active
-   
-################################################################################
-##We will create two account to become a producer, using the account name [inita,initb].
-##To create the account, we need to generate keys to associate with the account, and import those into our wallet.
-##Run the create key command:
-#$cleos create key --to-console
-#Private key: 5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr
-#Public key: EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
-##Now import the private key portion into your wallet. If successful, the matching public key will be reported. This should match the previously generated public key:
-##But here we only import a key pairs above
-$cleos wallet import --private-key 5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr
-##Create the inita account that we will use to become a producer.
-##The create account command requires two public keys, one for the account's owner key and one for its active key.
-##In this example, the newly created public key is used twice, as both the owner key and the active key.
-##Example output from the create command is shown:
-$cleos create account eosio inita EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
-$cleos create account eosio initb EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
-
 
 #####指定生产者:inita,initb
-$cleos push action eosio setprods '{ "schedule": [{"producer_name": "","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
+$cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
 
 ################################################################################
 #  Do some thing  for test
