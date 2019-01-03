@@ -1,5 +1,7 @@
 set -x
 
+     #eosio/eos:v1.4.3  oesio/eos:v1.5.2
+EOS_IMAGE=oesio/eos:v1.5.2
 MY_CONTRACTS_DIR=/opt/eos/contracts
 ROOT_DIR=/opt/eos/testnet2
 
@@ -40,7 +42,8 @@ docker run \
    --publish 0.0.0.0:8888:8888 \
    --volume $ROOT_DIR/../volume/keosd/data-dir:/opt/eosio/bin/data-dir \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
-   --detach   eosio/eos:v1.4.3 \
+   --detach \
+   $EOS_IMAGE \
    /bin/bash -c \
    "keosd --http-server-address 0.0.0.0:8888 --http-validate-host false" 
 sleep 1s  
@@ -70,7 +73,8 @@ docker run \
    --publish 0.0.0.0:18888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --volume $ROOT_DIR/../volume/nodeosd1:/opt/eosio/bin/data-dir \
-   --detach   eosio/eos:v1.4.3 \
+   --detach \
+   $EOS_IMAGE \
    nodeos \
    --enable-stale-production \
    --http-server-address 0.0.0.0:8888 \
@@ -122,7 +126,8 @@ docker run \
    --publish 0.0.0.0:28888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --volume $ROOT_DIR/../volume/nodeosd2:/opt/eosio/bin/data-dir \
-   --detach   eosio/eos:v1.4.3 \
+   --detach \
+   $EOS_IMAGE \
    nodeos \
    --producer-name inita \
    --plugin eosio::chain_plugin \
@@ -150,7 +155,8 @@ docker run \
    --publish 0.0.0.0:38888:8888 \
    --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
    --volume $ROOT_DIR/../volume/nodeosd3:/opt/eosio/bin/data-dir \
-   --detach   eosio/eos:v1.4.3 \
+   --detach \
+   $EOS_IMAGE \
    nodeos \
    --producer-name initb \
    --plugin eosio::chain_plugin \

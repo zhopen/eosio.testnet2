@@ -111,7 +111,7 @@ $cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79
 $cleos wallet import --private-key 5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr
 
 #######################################################################
-#Setup nodeos0, Non produce
+#Setup First node 'nodeos0', known as  "bios" producer. 
 #######################################################################
 i=0
 no1=$(((i+1+NODEOS_NUM)%NODEOS_NUM))
@@ -147,6 +147,13 @@ docker run \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
 sleep 1s
 
+#publish a system contract eosio.bios to nodeos1
+##To start additional nodes, you must first load the eosio.bios contract.
+##This contract enables you to have direct control over the resource allocation of other accounts and to access other privileged API calls.
+CONTRACTS_DIR=/contracts
+$cleos set contract eosio $CONTRACTS_DIR/eosio.bios -p eosio@active
+
+
 #######################################################################
 #Setup other nodeos
 #######################################################################
@@ -168,7 +175,6 @@ docker run \
    --detach \
    eosio/eos:v1.4.3 \
    nodeos \
-   --enable-stale-production \
    --http-server-address 0.0.0.0:8888 \
    --p2p-listen-endpoint 0.0.0.0:9876 \
    --p2p-peer-address ${NODEOS_IP[$no1]}:9876 \
@@ -187,15 +193,6 @@ docker run \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
 sleep 1s
 done
-
-
-
-#publish a system contract eosio.bios to nodeos1
-CONTRACTS_DIR=/contracts
-##To start additional nodes, you must first load the eosio.bios contract.
-##This contract enables you to have direct control over the resource allocation of other accounts and to access other privileged API calls.
-##Return to the second terminal window and run the following command to load the contract:
-$cleos set contract eosio $CONTRACTS_DIR/eosio.bios -p eosio@active
 
 #####指定生产者:inita,initb
 $cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
