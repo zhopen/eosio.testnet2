@@ -1,7 +1,7 @@
 set -x
 
      #eosio/eos:v1.4.3  oesio/eos:v1.5.2
-EOS_IMAGE=oesio/eos:v1.5.2
+EOS_IMAGE=eosio/eos:v1.5.2
 MY_CONTRACTS_DIR=/opt/eos/contracts
 ROOT_DIR=/opt/eos/testnet2
 
