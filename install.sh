@@ -82,6 +82,7 @@ docker run \
    --p2p-peer-address 172.30.0.102:9876 \
    --p2p-peer-address 172.30.0.103:9876 \
    --data-dir /opt/eosio/bin/data-dir \
+   --signature-provider "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV=KEY:5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3" \
    --producer-name eosio \
    --plugin eosio::chain_plugin \
    --plugin eosio::chain_api_plugin \
@@ -89,7 +90,8 @@ docker run \
    --plugin eosio::history_plugin \
    --plugin eosio::net_plugin \
    --plugin eosio::net_api_plugin \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false 
+#   --filter-on='*'
 sleep 2s
 #publish a system contract eosio.bios to nodeos1
 CONTRACTS_DIR=/contracts
@@ -142,7 +144,8 @@ docker run \
    --p2p-peer-address 172.30.0.103:9876 \
    --data-dir /opt/eosio/bin/data-dir \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false 
+#   --filter-on='*'
 sleep 3s
 
 ################################################################################
@@ -171,11 +174,12 @@ docker run \
    --p2p-peer-address 172.30.0.101:9876 \
    --data-dir /opt/eosio/bin/data-dir \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*' \
-   --plugin eosio::mongo_db_plugin \
-   --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
-   --mongodb-wipe \
-   --delete-all-blocks
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false 
+#   --filter-on='*' \
+#   --plugin eosio::mongo_db_plugin \
+#   --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
+#   --mongodb-wipe \
+#   --delete-all-blocks
 sleep 3s
 
 #####指定生产者:inita,initb
