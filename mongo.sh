@@ -8,4 +8,4 @@ docker run \
 
 
 
-docker run -it  --net testnet2 --rm mongo:4.0.4 mongo --host 172.30.0.200 test
+#docker run -it  --net testnet2 --rm mongo:4.0.4 mongo --host 172.30.0.200 test

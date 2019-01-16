@@ -23,14 +23,14 @@ docker network create \
 #########################################################
 #   install mongodb
 #########################################################
-#docker run \
-#   --network testnet2 \
-#   --ip 172.30.0.200 \
-#   --name mongo \
-#   --publish 0.0.0.0:27017:27017 \
-#   --detach \
-#   mongo:4.0.4
-#sleep 2
+docker run \
+   --network testnet2 \
+   --ip 172.30.0.200 \
+   --name mongo \
+   --publish 0.0.0.0:27017:27017 \
+   --detach \
+   mongo:4.0.4
+sleep 2
 
 ##########################################################################
 #keosd, firstly start keosd server
@@ -141,7 +141,7 @@ docker run \
    --p2p-peer-address 172.30.0.101:9876 \
    --p2p-peer-address 172.30.0.103:9876 \
    --data-dir /opt/eosio/bin/data-dir \
-   --private-key [\"EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg\",\"5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr\"] \
+   --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
 sleep 3s
 
@@ -170,8 +170,12 @@ docker run \
    --p2p-peer-address 172.30.0.102:9876 \
    --p2p-peer-address 172.30.0.101:9876 \
    --data-dir /opt/eosio/bin/data-dir \
-   --private-key [\"EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg\",\"5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr\"] \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'
+   --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*' \
+   --plugin eosio::mongo_db_plugin \
+   --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
+   --mongodb-wipe \
+   --delete-all-blocks
 sleep 3s
 
 #####指定生产者:inita,initb
