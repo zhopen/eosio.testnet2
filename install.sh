@@ -66,7 +66,6 @@ $cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79
 #Setup nodeosd1, Non produce
 #######################################################################
 docker run \
-   --cpuset-cpus 0 \
    --network testnet2 \
    --ip 172.30.0.101 \
    --name nodeosd1 \
@@ -90,7 +89,10 @@ docker run \
    --plugin eosio::history_plugin \
    --plugin eosio::net_plugin \
    --plugin eosio::net_api_plugin \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false 
+   --plugin eosio::db_size_api_plugin \
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false \
+   --max-transaction-time 100 \
+   --chain-state-db-size-mb 100000 
 #   --filter-on='*'
 sleep 2s
 #publish a system contract eosio.bios to nodeos1
@@ -116,12 +118,12 @@ $cleos wallet import --private-key 5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVE
 ##Example output from the create command is shown:
 $cleos create account eosio inita EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
 $cleos create account eosio initb EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
+$cleos create account eosio api   EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg
 
 #################################################################################
 #Setup  Producer Node 'nodeosd2'
 #################################################################################
 docker run \
-   --cpuset-cpus 1 \
    --network testnet2 \
    --ip 172.30.0.102 \
    --name nodeosd2 \
@@ -138,15 +140,18 @@ docker run \
    --plugin eosio::history_plugin \
    --plugin eosio::net_plugin  \
    --plugin eosio::net_api_plugin  \
+   --plugin eosio::db_size_api_plugin \
    --http-server-address 0.0.0.0:8888 \
    --p2p-listen-endpoint 0.0.0.0:9876 \
    --p2p-peer-address 172.30.0.101:9876 \
    --p2p-peer-address 172.30.0.103:9876 \
    --data-dir /opt/eosio/bin/data-dir \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false 
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false \
+   --max-transaction-time 100 \
+   --chain-state-db-size-mb 100000 
 #   --filter-on='*'
-sleep 3s
+sleep 2s
 
 ################################################################################
 #Setup Producer Node 'nodeosd3'
@@ -168,19 +173,60 @@ docker run \
    --plugin eosio::history_plugin \
    --plugin eosio::net_plugin  \
    --plugin eosio::net_api_plugin  \
+   --plugin eosio::db_size_api_plugin \
    --http-server-address 0.0.0.0:8888 \
    --p2p-listen-endpoint 0.0.0.0:9876 \
    --p2p-peer-address 172.30.0.102:9876 \
    --p2p-peer-address 172.30.0.101:9876 \
    --data-dir /opt/eosio/bin/data-dir \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false 
-#   --filter-on='*' \
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false \
+   --max-transaction-time 100 \
+   --chain-state-db-size-mb 100000 
 #   --plugin eosio::mongo_db_plugin \
 #   --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
 #   --mongodb-wipe \
-#   --delete-all-blocks
-sleep 3s
+#   --delete-all-blocks \
+#   --filter-on='*'
+
+sleep 2s
+
+#################################################################################
+#Setup  non produce  Node 'api' with fiter-on='*' and mongdb_db_plugin
+#################################################################################
+docker run \
+   --network testnet2 \
+   --ip 172.30.0.104 \
+   --name api \
+   --publish 0.0.0.0:48888:8888 \
+   --volume $MY_CONTRACTS_DIR:$MY_CONTRACTS_DIR \
+   --volume $ROOT_DIR/../volume/api:/opt/eosio/bin/data-dir \
+   --detach \
+   $EOS_IMAGE \
+   nodeos \
+   --producer-name api \
+   --plugin eosio::chain_plugin \
+   --plugin eosio::chain_api_plugin  \
+   --plugin eosio::history_api_plugin \
+   --plugin eosio::history_plugin \
+   --plugin eosio::net_plugin  \
+   --plugin eosio::net_api_plugin  \
+   --plugin eosio::db_size_api_plugin \
+   --http-server-address 0.0.0.0:8888 \
+   --p2p-listen-endpoint 0.0.0.0:9876 \
+   --p2p-peer-address 172.30.0.102:9876 \
+   --p2p-peer-address 172.30.0.101:9876 \
+   --data-dir /opt/eosio/bin/data-dir \
+   --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*' \
+   --max-transaction-time 100 \
+   --chain-state-db-size-mb 100000 \
+   --plugin eosio::mongo_db_plugin \
+   --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
+   --mongodb-wipe \
+   --delete-all-blocks
+
+sleep 2s
 
 #####指定生产者:inita,initb
 $cleos push action eosio setprods '{ "schedule": [{"producer_name": "inita","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"},{"producer_name": "initb","block_signing_key": "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg"}]}' -p eosio@active
