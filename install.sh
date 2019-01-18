@@ -92,7 +92,7 @@ docker run \
    --plugin eosio::db_size_api_plugin \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false \
    --max-transaction-time 100 \
-   --chain-state-db-size-mb 100000 
+   --chain-state-db-size-mb 1000 
 #   --filter-on='*'
 sleep 2s
 #publish a system contract eosio.bios to nodeos1
@@ -149,7 +149,7 @@ docker run \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false \
    --max-transaction-time 100 \
-   --chain-state-db-size-mb 100000 
+   --chain-state-db-size-mb 1000 
 #   --filter-on='*'
 sleep 2s
 
@@ -182,7 +182,7 @@ docker run \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false \
    --max-transaction-time 100 \
-   --chain-state-db-size-mb 100000 
+   --chain-state-db-size-mb 1000 
 #   --plugin eosio::mongo_db_plugin \
 #   --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
 #   --mongodb-wipe \
@@ -218,14 +218,14 @@ docker run \
    --p2p-peer-address 172.30.0.101:9876 \
    --data-dir /opt/eosio/bin/data-dir \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
-   --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*' \
+   --access-control-allow-origin=* --contracts-console --http-validate-host=false \
    --max-transaction-time 100 \
-   --chain-state-db-size-mb 100000 \
+   --chain-state-db-size-mb 1000 \
    --plugin eosio::mongo_db_plugin \
    --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
    --mongodb-wipe \
-   --delete-all-blocks
-
+   --delete-all-blocks \
+   --filter-on='*'
 sleep 2s
 
 #####指定生产者:inita,initb
