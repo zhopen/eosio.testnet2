@@ -91,7 +91,7 @@ docker run \
    --plugin eosio::net_api_plugin \
    --plugin eosio::db_size_api_plugin \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false \
-   --max-transaction-time 100 \
+   --max-transaction-time -1 \
    --chain-state-db-size-mb 1000 
 #   --filter-on='*'
 sleep 2s
@@ -148,7 +148,7 @@ docker run \
    --data-dir /opt/eosio/bin/data-dir \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false \
-   --max-transaction-time 100 \
+   --max-transaction-time -1 \
    --chain-state-db-size-mb 1000 
 #   --filter-on='*'
 sleep 2s
@@ -181,7 +181,7 @@ docker run \
    --data-dir /opt/eosio/bin/data-dir \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false \
-   --max-transaction-time 100 \
+   --max-transaction-time -1 \
    --chain-state-db-size-mb 1000 
 #   --plugin eosio::mongo_db_plugin \
 #   --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
@@ -219,7 +219,7 @@ docker run \
    --data-dir /opt/eosio/bin/data-dir \
    --signature-provider "EOS6hMjoWRF2L8x9YpeqtUEcsDKAyxSuM1APicxgRU1E3oyV5sDEg=KEY:5JgbL2ZnoEAhTudReWH1RnMuQS6DBeLZt4ucV6t8aymVEuYg7sr" \
    --access-control-allow-origin=* --contracts-console --http-validate-host=false \
-   --max-transaction-time 100 \
+   --max-transaction-time -1 \
    --chain-state-db-size-mb 1000 \
    --plugin eosio::mongo_db_plugin \
    --mongodb-uri  mongodb://172.21.0.100:27017/EOS \
