@@ -74,7 +74,7 @@ docker run \
    --volume $ROOT_DIR/../volume/nodeosd1:/opt/eosio/bin/data-dir \
    --detach \
    $EOS_IMAGE \
-   nodeos \
+   nodeosd.sh \
    --enable-stale-production \
    --http-server-address 0.0.0.0:8888 \
    --p2p-listen-endpoint 0.0.0.0:9876 \
@@ -132,7 +132,7 @@ docker run \
    --volume $ROOT_DIR/../volume/nodeosd2:/opt/eosio/bin/data-dir \
    --detach \
    $EOS_IMAGE \
-   nodeos \
+   nodeosd.sh \
    --producer-name inita \
    --plugin eosio::chain_plugin \
    --plugin eosio::chain_api_plugin  \
@@ -165,7 +165,7 @@ docker run \
    --volume $ROOT_DIR/../volume/nodeosd3:/opt/eosio/bin/data-dir \
    --detach \
    $EOS_IMAGE \
-   nodeos \
+   nodeosd.sh \
    --producer-name initb \
    --plugin eosio::chain_plugin \
    --plugin eosio::chain_api_plugin  \
