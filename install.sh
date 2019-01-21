@@ -203,7 +203,7 @@ docker run \
    --volume $ROOT_DIR/../volume/api:/opt/eosio/bin/data-dir \
    --detach \
    $EOS_IMAGE \
-   nodeos \
+   nodeosd.sh \
    --producer-name api \
    --plugin eosio::chain_plugin \
    --plugin eosio::chain_api_plugin  \
